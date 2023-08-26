@@ -243,10 +243,10 @@ public class Login extends JFrame {
 
 	private void Login() {
 		String userName = txtUsuario.getText();
-
 		EntityManager em = JPAUtils.getEntityManager();
 		User user = new UserDao(em).getUserByUsername(userName);
 		String password = new String(txtContrasena.getPassword());
+		
 		if (user != null && SecurityUtils.authenticateUser(user, password)) {
 			MenuUsuario menu = new MenuUsuario();
 			menu.setVisible(true);
