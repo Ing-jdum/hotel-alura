@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import utils.ViewsUtils;
+
 @SuppressWarnings("serial")
 public class MenuPrincipal extends JFrame {
 
@@ -107,7 +109,7 @@ public class MenuPrincipal extends JFrame {
 		btnexit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				confirmExit(panel);
+				ViewsUtils.confirmExit(panel);
 			}
 
 			@Override
@@ -178,12 +180,4 @@ public class MenuPrincipal extends JFrame {
 		this.setLocation(x - xMouse, y - yMouse);
 	}
 
-	private void confirmExit(Panel panel) {
-		int result = JOptionPane.showConfirmDialog(panel, "Are you sure you want to close the program?",
-				"Confirm Close", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-		if (result == JOptionPane.YES_OPTION) {
-			System.exit(0);
-		}
-	}
 }
