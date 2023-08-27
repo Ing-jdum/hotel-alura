@@ -165,6 +165,31 @@ public class MenuPrincipal extends JFrame {
 		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitulo.setForeground(SystemColor.textHighlight);
 		lblTitulo.setFont(new Font("Roboto Light", Font.PLAIN, 20));
+		
+		 // Create the register label
+	    JLabel lblRegister = new JLabel("Registrarse");
+	    lblRegister.setBounds(754, 380, 83, 24);
+	    lblRegister.setForeground(Color.BLUE);
+	    lblRegister.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+	    lblRegister.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	        	SingUp registrationWindow = new SingUp();
+	            registrationWindow.setVisible(true);
+	            dispose();
+	        }
+
+	        @Override
+	        public void mouseEntered(MouseEvent e) {
+	            lblRegister.setForeground(Color.BLACK);
+	        }
+
+	        @Override
+	        public void mouseExited(MouseEvent e) {
+	            lblRegister.setForeground(Color.BLUE);
+	        }
+	    });
+	    panel.add(lblRegister);
 	}
 
 	// Código que permite movimentar a janela pela tela seguindo a posição de "x" e
