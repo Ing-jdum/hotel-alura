@@ -30,8 +30,8 @@ public class HuespedDao extends GenericDao<Huesped, Long> {
 
 		Long id = ParseUtils.tryParseLong(searchTerm);
 		if (id != null) {
-			Optional<Huesped> optionalHuesped = findById(id);
-			return optionalHuesped.map(Arrays::asList).orElseGet(ArrayList::new);
+			Optional<Huesped> huesped = findById(id);
+			return huesped.map(Arrays::asList).orElseGet(ArrayList::new);
 		}
 
 		return findByName(searchTerm);
