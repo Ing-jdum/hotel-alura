@@ -13,12 +13,15 @@ import utils.ParseUtils;
 
 public class HuespedDao extends GenericDao<Huesped, Long> {
 
+	private static final String GET_ALL = "SELECT h FROM Huesped h LEFT JOIN FETCH h.reserva";
+	private static final String GET_HUESPED_BY_NAME = "Select h FROM Huesped h LEFT JOIN FETCH h.reserva WHERE h.nombre LIKE :name";
+
 	public HuespedDao(EntityManager entityManager) {
 		super(Huesped.class, entityManager);
 	}
 
 	public List<Huesped> findAll() {
-		TypedQuery<Huesped> query = entityManager.createQuery("SELECT h FROM Huesped h LEFT JOIN FETCH h.reserva",
+		TypedQuery<Huesped> query = entityManager.createQuery(GET_ALL,
 				Huesped.class);
 		return query.getResultList();
 	}
@@ -37,11 +40,11 @@ public class HuespedDao extends GenericDao<Huesped, Long> {
 		return findByName(searchTerm);
 	}
 
-	private List<Huesped> findByName(String nombre) {
+	private List<Huesped> findByName(String name) {
 		StringBuilder jpql = new StringBuilder(
-				"Select h FROM Huesped h LEFT JOIN FETCH h.reserva WHERE h.nombre LIKE :nombre");
+				GET_HUESPED_BY_NAME);
 		TypedQuery<Huesped> query = entityManager.createQuery(jpql.toString(), Huesped.class);
-		query.setParameter("nombre", "%" + nombre + "%");
+		query.setParameter("name", "%" + name + "%");
 		return query.getResultList();
 	}
 

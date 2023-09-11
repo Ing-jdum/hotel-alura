@@ -1,11 +1,14 @@
 package utils;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 public class JPAUtils {
 	
@@ -34,4 +37,12 @@ public class JPAUtils {
 
         return result;
     }
+	
+	public static <T> Optional<T> executeQuerySafely(TypedQuery<T> query) {
+		try {
+			return Optional.ofNullable(query.getSingleResult());
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
+	}
 }
