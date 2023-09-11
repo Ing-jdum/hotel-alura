@@ -1,29 +1,33 @@
 package views;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
 import java.awt.Color;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import java.awt.SystemColor;
-import java.awt.event.ActionListener;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Format;
-import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import javax.swing.SwingConstants;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+
+import com.toedter.calendar.JDateChooser;
+
+import controller.HuespedDao;
+import controller.ReservaDao;
+import model.Huesped;
+import model.Reserva;
+import utils.JPAUtils;
 
 @SuppressWarnings("serial")
 public class RegistroHuesped extends JFrame {
@@ -37,6 +41,7 @@ public class RegistroHuesped extends JFrame {
 	private JComboBox<Format> txtNacionalidad;
 	private JLabel labelExit;
 	private JLabel labelAtras;
+	private static final Reserva RESERVA = new ReservaDao(JPAUtils.getEntityManager()).findLastInsertedRecord();
 	int xMouse, yMouse;
 
 	/**
@@ -204,12 +209,14 @@ public class RegistroHuesped extends JFrame {
 		lblNumeroReserva.setFont(new Font("Roboto Black", Font.PLAIN, 18));
 		contentPane.add(lblNumeroReserva);
 		
+		
 		txtNreserva = new JTextField();
 		txtNreserva.setFont(new Font("Roboto", Font.PLAIN, 16));
 		txtNreserva.setBounds(560, 495, 285, 33);
 		txtNreserva.setColumns(10);
 		txtNreserva.setBackground(Color.WHITE);
 		txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		txtNreserva.setText(RESERVA.getId().toString());
 		contentPane.add(txtNreserva);
 		
 		JSeparator separator_1_2 = new JSeparator();
@@ -253,6 +260,19 @@ public class RegistroHuesped extends JFrame {
 		btnguardar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				try {
+					Huesped huesped = new Huesped();
+					huesped.setNombre(txtNombre.getText());
+					huesped.setApellido(txtApellido.getText());
+					huesped.setFechaNacimiento(txtFechaN.getDate());
+					huesped.setNacionalidad(txtNacionalidad.getSelectedItem().toString());
+					huesped.setTelefono(txtTelefono.getText());
+					huesped.setReserva(RESERVA);
+					System.out.println(huesped);
+					new HuespedDao(JPAUtils.getEntityManager()).create(huesped);
+				} catch(Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnguardar.setLayout(null);
@@ -315,17 +335,32 @@ public class RegistroHuesped extends JFrame {
 		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
 	}
 	
-	
-	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"	
-	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
-	        xMouse = evt.getX();
-	        yMouse = evt.getY();
-	    }
+	private void clearForm() {
+	    // Clear text fields
+	    txtNombre.setText("");
+	    txtApellido.setText("");
+	    txtTelefono.setText("");
+	    txtNreserva.setText("");
 
-	    private void headerMouseDragged(java.awt.event.MouseEvent evt) {
-	        int x = evt.getXOnScreen();
-	        int y = evt.getYOnScreen();
-	        this.setLocation(x - xMouse, y - yMouse);
-}
-											
+	    // Reset date chooser
+	    txtFechaN.setDate(null); // Set the date to null
+
+	    // Reset combo box
+	    txtNacionalidad.setSelectedIndex(0); // Set to the first item or a default item
+	}
+
+
+	// Código que permite mover la ventana por la pantalla según la posición de "x"
+	// y "y"
+	private void headerMousePressed(java.awt.event.MouseEvent evt) {
+		xMouse = evt.getX();
+		yMouse = evt.getY();
+	}
+
+	private void headerMouseDragged(java.awt.event.MouseEvent evt) {
+		int x = evt.getXOnScreen();
+		int y = evt.getYOnScreen();
+		this.setLocation(x - xMouse, y - yMouse);
+	}
+
 }
