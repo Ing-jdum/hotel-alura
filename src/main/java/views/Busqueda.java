@@ -7,10 +7,11 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import controller.HuespedDao;
 import controller.ReservaDao;
@@ -104,6 +106,15 @@ public class Busqueda extends JFrame {
 		modelo.addColumn("Fecha Check Out");
 		modelo.addColumn("Valor");
 		modelo.addColumn("Forma de Pago");
+		
+		TableColumn reservaIdColumn = tbReservas.getColumnModel().getColumn(0);
+		reservaIdColumn.setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean isCellEditable(java.util.EventObject e) {
+                return false; // Make the cell non-editable
+            }
+        });
+        
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table,
 				null);
@@ -120,6 +131,24 @@ public class Busqueda extends JFrame {
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
 		modeloHuesped.addColumn("Número de Reserva");
+		
+		// Make the "Número de Reserva" column (column index 6) non-editable
+        TableColumn reservaColumn = tbHuespedes.getColumnModel().getColumn(6);
+        reservaColumn.setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean isCellEditable(java.util.EventObject e) {
+                return false; // Make the cell non-editable
+            }
+        });
+        
+        TableColumn huespedColumn = tbHuespedes.getColumnModel().getColumn(0);
+        huespedColumn.setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public boolean isCellEditable(java.util.EventObject e) {
+                return false; // Make the cell non-editable
+            }
+        });
+        
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")),
 				scroll_tableHuespedes, null);
@@ -225,15 +254,7 @@ public class Busqueda extends JFrame {
 		btnbuscar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				modeloHuesped.setRowCount(0);
-				List<Huesped> huespedes = new HuespedDao(JPAUtils.getEntityManager())
-						.findByNameOrId(txtBuscar.getText());
-				addHuespedList(modeloHuesped, huespedes);
-				
-				List<Reserva> reservas = new ReservaDao(JPAUtils.getEntityManager())
-						.findByNameOrId(txtBuscar.getText());
-				modelo.setRowCount(0);
-				addReservaList(modelo, reservas);
+				populateTables();
 			}
 		});
 		btnbuscar.setLayout(null);
@@ -253,17 +274,9 @@ public class Busqueda extends JFrame {
 		btnEditar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int selectedRow = tbReservas.getSelectedRow();
-				if (selectedRow != -1) {
-					new ReservaDao(JPAUtils.getEntityManager()).update(mapRowToReserva(selectedRow));
-				}
-
-				int selectedRowHuespedes = tbHuespedes.getSelectedRow();
-				if (selectedRowHuespedes != -1) {
-					new HuespedDao(JPAUtils.getEntityManager()).update(mapRowToHuesped(selectedRow));
-				}
+				editTables();
+				populateTables();
 			}
-
 		});
 		btnEditar.setLayout(null);
 		btnEditar.setBackground(new Color(12, 138, 199));
@@ -282,15 +295,11 @@ public class Busqueda extends JFrame {
 		btnEliminar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int selectedRow = tbReservas.getSelectedRow();
-				if (selectedRow != -1) {
-					new ReservaDao(JPAUtils.getEntityManager()).delete(mapRowToReserva(selectedRow).getId());
-				}
-				int selectedRowHuespedes = tbHuespedes.getSelectedRow();
-				if (selectedRowHuespedes != -1) {
-					new HuespedDao(JPAUtils.getEntityManager()).delete(mapRowToHuesped(selectedRowHuespedes).getId());
-				}
+				deleteDataFromTables();
+				populateTables();
 			}
+
+			
 		});
 		btnEliminar.setLayout(null);
 		btnEliminar.setBackground(new Color(12, 138, 199));
@@ -305,6 +314,43 @@ public class Busqueda extends JFrame {
 		lblEliminar.setBounds(0, 0, 122, 35);
 		btnEliminar.add(lblEliminar);
 		setResizable(false);
+		
+		populateTables();
+	}
+	
+	private void editTables() {
+		int selectedRow = tbReservas.getSelectedRow();
+		if (selectedRow != -1) {
+			new ReservaDao(JPAUtils.getEntityManager()).update(mapRowToReserva(selectedRow));
+		}
+
+		int selectedRowHuespedes = tbHuespedes.getSelectedRow();
+		if (selectedRowHuespedes != -1) {
+			new HuespedDao(JPAUtils.getEntityManager()).update(mapRowToHuesped(selectedRowHuespedes));
+		}
+	}
+	
+	private void populateTables() {
+		modeloHuesped.setRowCount(0);
+		List<Huesped> huespedes = new HuespedDao(JPAUtils.getEntityManager())
+				.findByNameOrId(txtBuscar.getText());
+		addHuespedList(modeloHuesped, huespedes);
+		
+		List<Reserva> reservas = new ReservaDao(JPAUtils.getEntityManager())
+				.findByNameOrId(txtBuscar.getText());
+		modelo.setRowCount(0);
+		addReservaList(modelo, reservas);
+	}
+	
+	private void deleteDataFromTables() {
+		int selectedRow = tbReservas.getSelectedRow();
+		if (selectedRow != -1) {
+			new ReservaDao(JPAUtils.getEntityManager()).delete(mapRowToReserva(selectedRow).getId());
+		}
+		int selectedRowHuespedes = tbHuespedes.getSelectedRow();
+		if (selectedRowHuespedes != -1) {
+			new HuespedDao(JPAUtils.getEntityManager()).delete(mapRowToHuesped(selectedRowHuespedes).getId());
+		}
 	}
 
 	private void addReservaList(DefaultTableModel table, List<Reserva> reservas) {
@@ -338,9 +384,11 @@ public class Busqueda extends JFrame {
 
 		return reserva;
 	}
+	
+	
 
 	private void addHuespedList(DefaultTableModel table, List<Huesped> huespedes) {
-		if (huespedes == null) {
+		if (huespedes == null || huespedes.isEmpty()) {
 			return;
 		}
 		for (Huesped huesped : huespedes) {
@@ -361,7 +409,8 @@ public class Busqueda extends JFrame {
 		Date fechaNacimiento = DateUtils.parseStringToDate(modeloHuesped.getValueAt(selectedRow, 3).toString());
 		String nacionalidad = modeloHuesped.getValueAt(selectedRow, 4).toString();
 		String telefono = modeloHuesped.getValueAt(selectedRow, 5).toString();
-
+		Long reservaId = ParseUtils.tryParseLong(modeloHuesped.getValueAt(selectedRow, 6).toString());
+		Optional<Reserva> reserva = new ReservaDao(JPAUtils.getEntityManager()).findById(reservaId);
 		// Create a new Huesped object with the extracted values
 		Huesped huesped = new Huesped();
 		huesped.setId(id);
@@ -370,6 +419,7 @@ public class Busqueda extends JFrame {
 		huesped.setFechaNacimiento(fechaNacimiento);
 		huesped.setNacionalidad(nacionalidad);
 		huesped.setTelefono(telefono);
+		reserva.ifPresent(huesped::setReserva);
 
 		return huesped;
 	}

@@ -3,10 +3,8 @@ package utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.UUID;
 
-import javax.persistence.EntityManager;
-
-import controller.UserDao;
 import model.Salt;
 import model.User;
 
@@ -48,4 +46,10 @@ public class SecurityUtils {
 		String hashedPassword = hashPasswordWithSalt(password, salt);
 		return hashedPassword.equals(user.getPassword());
 	}
+	
+	public static String generateTemporaryPassword() {
+        // Implement your secure temporary password generation logic here
+        // Ensure the password meets your application's password policy
+        return UUID.randomUUID().toString().substring(0, 8); // Example: Generate an 8-character temporary password
+    }
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import model.Salt;
 import model.User;
 import utils.JPAUtils;
 
@@ -36,6 +37,25 @@ public class UserDao extends GenericDao<User, Long> {
 
 		Long count = query.getSingleResult();
 		return count > 0;
+	}
+	
+	@Override
+	public void update(User entity) {
+	    JPAUtils.performTransaction(entityManager, em -> {
+	        // Retrieve the existing Salt entity associated with the User
+	        Salt existingSalt = entity.getSalt();
+	        
+	        // Merge the Salt entity to ensure it's in the persistence context
+	        Salt mergedSalt = em.merge(existingSalt);
+	        
+	        // Set the merged Salt entity back to the User
+	        entity.setSalt(mergedSalt);
+	        
+	        // Merge the User entity
+	        em.merge(entity);
+	        
+	        return null;
+	    });
 	}
 
 }

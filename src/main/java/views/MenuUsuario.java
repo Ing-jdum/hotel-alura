@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import utils.ViewsUtils;
+
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -149,39 +152,39 @@ public class MenuUsuario extends JFrame {
 		JSeparator separator = new JSeparator();
 		separator.setBounds(26, 219, 201, 2);
 		panelMenu.add(separator);
+		
+		JLabel lblCambiarContrasena = new JLabel("Cambiar Contrasena");
+		lblCambiarContrasena.setFont(new Font("Dialog", Font.BOLD, 18));
+		lblCambiarContrasena.setForeground(new Color(255, 255, 255));
+		lblCambiarContrasena.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCambiarContrasena.setBounds(0, 382, 257, 47);
+		panelMenu.add(lblCambiarContrasena);
+		
+		lblCambiarContrasena.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblCambiarContrasena.setForeground(new Color(118, 187, 223));				
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblCambiarContrasena.setForeground(Color.white);	
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ChangePassword changePassword = new ChangePassword();
+				changePassword.setVisible(true);
+				dispose();
+			}
+		});
+		
 		header.setLayout(null);
 		header.setBackground(Color.WHITE);
 		header.setBounds(0, 0, 944, 36);
 		contentPane.add(header);
 		
-		JPanel btnexit = new JPanel();
-		btnexit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnexit.setBackground(Color.red);
-				labelExit.setForeground(Color.white);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				 btnexit.setBackground(Color.white);
-			     labelExit.setForeground(Color.black);
-			}
-		});
-		
-		btnexit.setLayout(null);
-		btnexit.setBackground(Color.WHITE);
-		btnexit.setBounds(891, 0, 53, 36);
+		JPanel btnexit = ViewsUtils.createExitButton(header, 891, 0, 53, 36);
 		header.add(btnexit);
 		
-		labelExit = new JLabel("X");
-		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
-		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
-		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
 		
 	    JPanel panelFecha = new JPanel();
 	    panelFecha.setBackground(new Color(118, 187, 223));

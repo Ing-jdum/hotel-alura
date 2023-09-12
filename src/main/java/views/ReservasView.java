@@ -29,6 +29,7 @@ import com.toedter.calendar.JDateChooser;
 import controller.ReservaDao;
 import model.Reserva;
 import utils.JPAUtils;
+import utils.ViewsUtils;
 
 @SuppressWarnings("serial")
 public class ReservasView extends JFrame {
@@ -125,7 +126,7 @@ public class ReservasView extends JFrame {
 		JLabel lblTitulo = new JLabel("SISTEMA DE RESERVAS");
 		lblTitulo.setBounds(109, 60, 219, 42);
 		lblTitulo.setForeground(new Color(12, 138, 199));
-		lblTitulo.setFont(new Font("Roboto", Font.BOLD, 20));
+		lblTitulo.setFont(new Font("Roboto", Font.BOLD, 14));
 		panel.add(lblTitulo);
 
 		JPanel panel_1 = new JPanel();
@@ -158,38 +159,8 @@ public class ReservasView extends JFrame {
 		panel.add(separator_1);
 
 		// Componentes para dejar la interfaz con estilo Material Design
-		JPanel btnexit = new JPanel();
-		btnexit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				MenuPrincipal principal = new MenuPrincipal();
-				principal.setVisible(true);
-				dispose();
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnexit.setBackground(Color.red);
-				labelExit.setForeground(Color.white);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				btnexit.setBackground(new Color(12, 138, 199));
-				labelExit.setForeground(Color.white);
-			}
-		});
-		btnexit.setLayout(null);
-		btnexit.setBackground(new Color(12, 138, 199));
-		btnexit.setBounds(429, 0, 53, 36);
+		JPanel btnexit = ViewsUtils.createExitButton(panel_1, 429, 0, 53, 36);
 		panel_1.add(btnexit);
-
-		labelExit = new JLabel("X");
-		labelExit.setForeground(Color.WHITE);
-		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
-		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
-		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
 
 		JPanel header = new JPanel();
 		header.setBounds(0, 0, 910, 36);
@@ -242,11 +213,6 @@ public class ReservasView extends JFrame {
 		labelAtras.setHorizontalAlignment(SwingConstants.CENTER);
 		labelAtras.setFont(new Font("Roboto", Font.PLAIN, 23));
 
-		JLabel lblSiguiente = new JLabel("SIGUIENTE");
-		lblSiguiente.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSiguiente.setForeground(Color.WHITE);
-		lblSiguiente.setFont(new Font("Roboto", Font.PLAIN, 18));
-		lblSiguiente.setBounds(0, 0, 122, 35);
 
 		// Campos que guardaremos en la base de datos
 		txtFechaEntrada = new JDateChooser();
@@ -317,7 +283,15 @@ public class ReservasView extends JFrame {
 				}
 			}
 		});
+		
+		JLabel lblSiguiente = new JLabel("SIGUIENTE");
+		lblSiguiente.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSiguiente.setForeground(Color.WHITE);
+		lblSiguiente.setFont(new Font("Roboto", Font.PLAIN, 18));
+		lblSiguiente.setBounds(0, 0, 122, 35);
+		
 		btnsiguiente.setLayout(null);
+		btnsiguiente.add(lblSiguiente);
 		btnsiguiente.setBackground(SystemColor.textHighlight);
 		btnsiguiente.setBounds(238, 493, 122, 35);
 		panel.add(btnsiguiente);

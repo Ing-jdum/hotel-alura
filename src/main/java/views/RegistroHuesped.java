@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -101,8 +102,8 @@ public class RegistroHuesped extends JFrame {
 		btnAtras.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ReservasView reservas = new ReservasView();
-				reservas.setVisible(true);
+				MenuUsuario menu = new MenuUsuario();
+				menu.setVisible(true);
 				dispose();				
 			}
 			@Override
@@ -268,8 +269,13 @@ public class RegistroHuesped extends JFrame {
 					huesped.setNacionalidad(txtNacionalidad.getSelectedItem().toString());
 					huesped.setTelefono(txtTelefono.getText());
 					huesped.setReserva(RESERVA);
-					System.out.println(huesped);
 					new HuespedDao(JPAUtils.getEntityManager()).create(huesped);
+					JOptionPane.showMessageDialog(
+						    contentPane, // Parent component, can be 'null' if not needed
+						    "Huesped registrado satisfactoriamente", // Message to display
+						    "Registro Exitoso", // Title of the dialog box
+						    JOptionPane.INFORMATION_MESSAGE);
+					clearForm();
 				} catch(Exception e1) {
 					e1.printStackTrace();
 				}
@@ -302,37 +308,6 @@ public class RegistroHuesped extends JFrame {
 		logo.setBounds(194, 39, 104, 107);
 		panel.add(logo);
 		logo.setIcon(new ImageIcon(RegistroHuesped.class.getResource("/imagenes/Ha-100px.png")));
-		
-		JPanel btnexit = new JPanel();
-		btnexit.setBounds(857, 0, 53, 36);
-		contentPane.add(btnexit);
-		btnexit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				MenuPrincipal principal = new MenuPrincipal();
-				principal.setVisible(true);
-				dispose();
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnexit.setBackground(Color.red);
-				labelExit.setForeground(Color.white);
-			}			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				 btnexit.setBackground(Color.white);
-			     labelExit.setForeground(Color.black);
-			}
-		});
-		btnexit.setLayout(null);
-		btnexit.setBackground(Color.white);
-		
-		labelExit = new JLabel("X");
-		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
-		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
-		labelExit.setForeground(SystemColor.black);
-		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
 	}
 	
 	private void clearForm() {
@@ -340,8 +315,6 @@ public class RegistroHuesped extends JFrame {
 	    txtNombre.setText("");
 	    txtApellido.setText("");
 	    txtTelefono.setText("");
-	    txtNreserva.setText("");
-
 	    // Reset date chooser
 	    txtFechaN.setDate(null); // Set the date to null
 

@@ -7,6 +7,7 @@ import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.swing.ImageIcon;
@@ -24,6 +25,7 @@ import controller.UserDao;
 import model.User;
 import utils.JPAUtils;
 import utils.SecurityUtils;
+import utils.ViewsUtils;
 
 public class Login extends JFrame {
 
@@ -31,6 +33,7 @@ public class Login extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static Long currentUser;
 	private JPanel contentPane;
 	private JTextField txtUsuario;
 	private JPasswordField txtContrasena;
@@ -77,42 +80,13 @@ public class Login extends JFrame {
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 
+		JPanel btnexit = ViewsUtils.createExitButton(panel_1, 250, 0, 53, 36);
+		panel_1.add(btnexit);
+
 		JLabel imgHotel = new JLabel("");
 		imgHotel.setBounds(0, 0, 304, 538);
 		panel_1.add(imgHotel);
 		imgHotel.setIcon(new ImageIcon(Login.class.getResource("/imagenes/img-hotel-login-.png")));
-
-		JPanel btnexit = new JPanel();
-		btnexit.setBounds(251, 0, 53, 36);
-		panel_1.add(btnexit);
-		btnexit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnexit.setBackground(Color.red);
-				labelExit.setForeground(Color.white);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				btnexit.setBackground(new Color(12, 138, 199));
-				labelExit.setForeground(Color.white);
-			}
-		});
-		btnexit.setBackground(new Color(12, 138, 199));
-		btnexit.setLayout(null);
-		btnexit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-		labelExit = new JLabel("X");
-		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
-		labelExit.setForeground(SystemColor.text);
-		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
-		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
 
 		txtUsuario = new JTextField();
 		txtUsuario.addMouseListener(new MouseAdapter() {
@@ -203,7 +177,7 @@ public class Login extends JFrame {
 			}
 		});
 		btnLogin.setBackground(SystemColor.textHighlight);
-		btnLogin.setBounds(65, 431, 122, 44);
+		btnLogin.setBounds(65, 461, 122, 44);
 		panel.add(btnLogin);
 		btnLogin.setLayout(null);
 		btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -239,21 +213,64 @@ public class Login extends JFrame {
 		header.setBounds(0, 0, 784, 36);
 		panel.add(header);
 		header.setLayout(null);
+
+		JLabel lblNewLabel_2 = new JLabel("Nuevo en el app? click aqui para registrarse");
+		lblNewLabel_2.setForeground(new Color(28, 113, 216));
+		lblNewLabel_2.setBounds(65, 407, 324, 15);
+		panel.add(lblNewLabel_2);
+		lblNewLabel_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Open the SignUp screen
+				SignUp signUp = new SignUp();
+				signUp.setVisible(true);
+				dispose(); // Close the current frame
+			}
+		});
+		
+		
+		JLabel lblOlvidoSuContrasena = new JLabel("Olvido su contrasena? click aqui");
+		lblOlvidoSuContrasena.setBounds(65, 434, 226, 15);
+		panel.add(lblOlvidoSuContrasena);
+		lblOlvidoSuContrasena.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Open the SignUp screen
+				ForgotPassword forgotPassword = new ForgotPassword();
+				forgotPassword.setVisible(true);
+				dispose(); // Close the current frame
+			}
+		});
+
 	}
 
 	private void Login() {
 		String userName = txtUsuario.getText();
 		EntityManager em = JPAUtils.getEntityManager();
-		User user = new UserDao(em).getUserByUsername(userName);
+		Optional<User> user = new UserDao(em).getUserByUsername(userName);
 		String password = new String(txtContrasena.getPassword());
-		
-		if (user != null && SecurityUtils.authenticateUser(user, password)) {
+
+		if (user.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
+			return;
+		}
+
+		if (user != null && SecurityUtils.authenticateUser(user.get(), password)) {
+			setCurrentUser(user);
 			MenuUsuario menu = new MenuUsuario();
 			menu.setVisible(true);
 			dispose();
 		} else {
 			JOptionPane.showMessageDialog(this, "Usuario o Contraseña no válidos");
 		}
+	}
+
+	private static void setCurrentUser(Optional<User> user) {
+		user.ifPresent(val -> currentUser = val.getId());
+	}
+	
+	public static Long getCurrentUser() {
+		return currentUser;
 	}
 
 	private void headerMousePressed(java.awt.event.MouseEvent evt) {

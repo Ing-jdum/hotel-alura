@@ -24,8 +24,8 @@ import utils.ViewsUtils;
 public class MenuPrincipal extends JFrame {
 
 	private JPanel contentPane;
-	private JLabel labelExit;
-	int xMouse, yMouse;
+ 	int xMouse;
+	int yMouse;
 
 	/**
 	 * Launch the application.
@@ -56,7 +56,7 @@ public class MenuPrincipal extends JFrame {
 		setLocationRelativeTo(null);
 		setUndecorated(true);
 
-		Panel panel = new Panel();
+		JPanel panel = new JPanel();
 		panel.setBackground(SystemColor.window);
 		panel.setBounds(0, 0, 910, 537);
 		contentPane.add(panel);
@@ -105,36 +105,9 @@ public class MenuPrincipal extends JFrame {
 		panel.add(header);
 
 		// Botón salir
-		JPanel btnexit = new JPanel();
-		btnexit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				ViewsUtils.confirmExit(panel);
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				btnexit.setBackground(Color.red);
-				labelExit.setForeground(Color.white);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				btnexit.setBackground(Color.white);
-				labelExit.setForeground(Color.black);
-			}
-		});
-		btnexit.setLayout(null);
-		btnexit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-		btnexit.setBackground(Color.WHITE);
-		btnexit.setBounds(857, 0, 53, 36);
+		JPanel btnexit = ViewsUtils.createExitButton(panel, 857, 0, 53, 36);
+		
 		header.add(btnexit);
-
-		labelExit = new JLabel("X");
-		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
-		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
-		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
 
 		// Botón Login
 		JPanel btnLogin = new JPanel();
@@ -174,7 +147,7 @@ public class MenuPrincipal extends JFrame {
 	    lblRegister.addMouseListener(new MouseAdapter() {
 	        @Override
 	        public void mouseClicked(MouseEvent e) {
-	        	SingUp registrationWindow = new SingUp();
+	        	SignUp registrationWindow = new SignUp();
 	            registrationWindow.setVisible(true);
 	            dispose();
 	        }
