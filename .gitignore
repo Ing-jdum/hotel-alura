@@ -1,0 +1,96 @@
+# Maven-specific files and directories
+target/
+dependency-reduced-pom.xml
+release.properties
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+mvnw
+mvnw.cmd
+.mvn/
+.idea/
+*.iml
+
+# IDE-specific files and directories (e.g., IntelliJ IDEA, Eclipse)
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+
+# Logs and temporary files
+logs/
+*.log
+*.log.*
+*.un~
+*.swp
+hs_err_pid*
+
+# Compiled Java classes
+*.class
+
+# Generated files and directories
+target/
+bin/
+gen/
+out/
+
+# Miscellaneous
+.DS_Store
+*.zip
+*.gz
+*.tar.gz
+Thumbs.db
+ehthumbs.db
+.env
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Compiled Java classes
+*.class
+
+# Compiled Python files
+__pycache__/
+
+# Compiled Ruby files
+*.rbc
+
+# Compiled TypeScript files
+*.tsbuildinfo
+
+# Node.js files
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Editor/IDE-specific files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+*.exe
