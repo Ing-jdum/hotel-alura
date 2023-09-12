@@ -32,3 +32,7 @@ A hotel management application built as part of the Oracle Next Education Progra
 2. Set up your MySQL database and update the database configuration in src/main/resources/META-INF/persistence.xml.
 3. Set up the env variables for the email.
 4. Build and run the app.
+
+## Disclaimer
+
+I did not develope the UI, it was provided by the Alura-latam team. 
