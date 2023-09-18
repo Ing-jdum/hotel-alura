@@ -35,4 +35,4 @@ A hotel management application built as part of the Oracle Next Education Progra
 
 ## Disclaimer
 
-I did not develope the UI, it was provided by the Alura-latam team. 
+I did not develop the UI, it was provided by the Alura-latam team. 
